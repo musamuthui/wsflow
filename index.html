@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>WSFlow · Delivery Verification</title>
+  
+  <!-- Google Fonts & Material Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <style>
+    /* ----- Material UI Base Theme ----- */
+    :root {
+      --md-sys-color-primary: #1976D2;
+      --md-sys-color-primary-dark: #115293;
+      --md-sys-color-surface: #FFFFFF;
+      --md-sys-color-background: #F5F5F5;
+      --md-sys-color-on-surface: #212121;
+      --md-sys-color-on-surface-variant: #757575;
+      --md-sys-color-outline: #E0E0E0;
+      --md-sys-color-secondary-container: #E3F2FD;
+      --md-sys-color-on-secondary-container: #0D47A1;
+      --md-sys-color-success: #2E7D32;
+      --md-sys-color-success-bg: #E8F5E9;
+      --md-elevation-1: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+      --md-elevation-2: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--md-sys-color-background);
+      color: var(--md-sys-color-on-surface);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* App Shell - Mobile First */
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--md-sys-color-background);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media (min-width: 600px) {
+      body { padding: 20px; align-items: center; }
+      .app-shell {
+        min-height: calc(100vh - 40px);
+        border-radius: 24px;
+        box-shadow: var(--md-elevation-2);
+        overflow: hidden;
+      }
+    }
+
+    /* Icons */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+
+    /* Top App Bar */
+    .top-app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background-color: var(--md-sys-color-surface);
+      box-shadow: var(--md-elevation-1);
+      z-index: 10;
+      position: sticky;
+      top: 0;
+    }
+
+    .brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      background: transparent;
+      border: none;
+      color: var(--md-sys-color-on-surface-variant);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .icon-button:hover, .icon-button:active { background-color: rgba(0,0,0,0.05); }
+
+    /* Language Toggle (Material Style) */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      background: var(--md-sys-color-surface);
+      border: 1px solid var(--md-sys-color-outline);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .lang-toggle button {
+      background: transparent;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-toggle button.active {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+    }
+
+    /* Main Content Area */
+    .app-main {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--md-sys-color-background);
+    }
+
+    /* Page Transitions */
+    .page { display: none; flex-direction: column; animation: fadeIn 0.2s ease; }
+    .page.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Segmented Control (Material Style) */
+    .segmented-control {
+      display: flex;
+      background: #E0E0E0;
+      padding: 4px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .segmented-control button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface-variant);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .segmented-control button.active {
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-primary);
+      box-shadow: var(--md-elevation-1);
+    }
+
+    /* Task Cards (Slide 2 Base) */
+    .task-card {
+      background: var(--md-sys-color-surface);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--md-elevation-1);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .task-card:active {
+      transform: scale(0.98);
+      box-shadow: var(--md-elevation-2);
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .task-user {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .task-user .name {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--md-sys-color-on-surface);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .task-user .id, .task-user .plate {
+      font-size: 0.8rem;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+
+    .task-image {
+      width: 64px;
+      height: 48px;
+      background: #F0F0F0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .task-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .task-locations {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .location-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--md-sys-color-on-surface-variant);
+      background: #F5F5F5;
+      padding: 6px 10px;
+      border-radius: 16px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* Detail Page (Slide 3 Base) */
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .detail-header h2 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .info-card {
+      background: var(--md-sys-color-surface);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--md-elevation-1);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--md-sys-color-outline);
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-row:first-child { padding-top: 0; }
+    
+    .info-label {
+      color: var(--md-sys-color-on-surface-variant);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .info-value {
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface);
+      font-size: 0.9rem;
+    }
+
+    /* Checklist */
+    .checklist-container {
+      background: var(--md-sys-color-surface);
+      border-radius: 12px;
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      box-shadow: var(--md-elevation-1);
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--md-sys-color-outline);
+    }
+    .check-item:last-child { border-bottom: none; }
+    .check-item input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      margin-right: 16px;
+      accent-color: var(--md-sys-color-primary);
+      cursor: pointer;
+    }
+    .check-text {
+      flex: 1;
+      font-size: 0.95rem;
+      color: var(--md-sys-color-on-surface);
+      transition: color 0.2s;
+    }
+    .check-item.checked .check-text {
+      color: var(--md-sys-color-on-surface-variant);
+      text-decoration: line-through;
+    }
+
+    /* Buttons */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 14px;
+      border-radius: 24px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-primary {
+      background: var(--md-sys-color-primary);
+      color: white;
+      box-shadow: var(--md-elevation-1);
+    }
+    .btn-primary:hover { background: var(--md-sys-color-primary-dark); }
+    .btn-primary:disabled {
+      background: #BDBDBD;
+      color: #757575;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      display: flex;
+      background: var(--md-sys-color-surface);
+      padding: 8px 0;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0px -1px 3px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      color: var(--md-sys-color-on-surface-variant);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 16px;
+      transition: 0.2s;
+    }
+    .nav-item.active { color: var(--md-sys-color-primary); }
+    .nav-item.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+
+  </style>
+</head>
+<body>
+
+  <div class="app-shell" id="appShell">
+    
+    <!-- Top App Bar -->
+    <header class="top-app-bar">
+      <div class="brand">
+        <span class="material-symbols-outlined filled" style="color: var(--md-sys-color-primary);">local_shipping</span>
+        WSFlow
+      </div>
+      
+      <div class="lang-toggle">
+        <button id="langEn" class="active">EN</button>
+        <button id="langSw">SW</button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      
+      <!-- ================= PAGE 1: DASHBOARD (Slide 2) ================= -->
+      <div class="page active" id="pageDashboard">
+        
+        <!-- Segmented Control -->
+        <div class="segmented-control">
+          <button class="active" data-tab="delivery">
+            <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+            <span data-lang-key="deliveries">Deliveries</span>
+          </button>
+          <button data-tab="pickup">
+            <span class="material-symbols-outlined" style="font-size: 20px;">download</span>
+            <span data-lang-key="pickups">Pickups</span>
+          </button>
+        </div>
+
+        <!-- Task Card 1 -->
+        <div class="task-card" onclick="goToDetails(1)">
+          <div class="task-header">
+            <div class="task-user">
+              <div class="name">
+                <span data-lang-key="user1">Daniel K. William</span> 
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #757575;">person</span>
+              </div>
+              <div class="id">ID: 200886</div>
+              <div class="plate">Plate: 28-FS-6482</div>
+            </div>
+            <div class="task-image">
+              <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car">
+            </div>
+          </div>
+          <div class="task-locations">
+            <div class="location-item">
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">flight</span>
+              Airport
+            </div>
+            <div class="location-item">
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">storefront</span>
+              Branch
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Card 2 -->
+        <div class="task-card" onclick="goToDetails(2)">
+          <div class="task-header">
+            <div class="task-user">
+              <div class="name">
+                <span data-lang-key="user2">Travis B. Jhonson</span> 
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #757575;">person</span>
+              </div>
+              <div class="id">ID: 505642</div>
+              <div class="plate">Plate: 57-LX-4060</div>
+            </div>
+            <div class="task-image">
+              <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car">
+            </div>
+          </div>
+          <div class="task-locations">
+            <div class="location-item">
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">flight</span>
+              Airport
+            </div>
+            <div class="location-item">
+              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">storefront</span>
+              Branch
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= PAGE 2: TASK DETAILS (Slide 3) ================= -->
+      <div class="page" id="pageDetails">
+        
+        <div class="detail-header">
+          <button class="icon-button" onclick="switchTab('pageDashboard')">
+            <span class="material-symbols-outlined">arrow_back</span>
+          </button>
+          <h2 data-lang-key="taskDetails">Task Details</h2>
+        </div>
+
+        <!-- Customer Info Card -->
+        <div class="info-card">
+          <div class="info-row">
+            <div class="info-label">
+              <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
+              <span data-lang-key="customer">Customer</span>
+            </div>
+            <div class="info-value" id="detailCustomer">Daniel K. William</div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-label">
+              <span class="material-symbols-outlined" style="font-size: 20px;">directions_car</span>
+              <span data-lang-key="vehicle">Vehicle</span>
+            </div>
+            <div class="info-value" id="detailVehicle">Blue Sedan · 28-FS-6482</div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-label">
+              <span class="material-symbols-outlined" style="font-size: 20px;">location_on</span>
+              <span data-lang-key="location">Location</span>
+            </div>
+            <div class="info-value">King St W, Toronto</div>
+          </div>
+        </div>
+
+        <!-- Checklist Card -->
+        <div style="margin-bottom: 8px; font-weight: 500; font-size: 1rem; color: var(--md-sys-color-on-surface);" data-lang-key="checkItems">
+          Check items to deliver
+        </div>
+        
+        <div class="checklist-container" id="checklistContainer">
+          <div class="check-item">
+            <input type="checkbox" class="item-check" checked>
+            <span class="check-text" data-lang-key="item1">Organic whole milk (2x)</span>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" class="item-check" checked>
+            <span class="check-text" data-lang-key="item2">Sourdough bread (1x)</span>
+          </div>
+          <div class="check-item">
+            <input type="checkbox" class="item-check">
+            <span class="check-text" data-lang-key="item3">Free-range eggs (1x)</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button class="btn btn-primary" id="verifyBtn" disabled>
+          <span class="material-symbols-outlined" style="font-size: 20px;">check_circle</span>
+          <span data-lang-key="verifyItems">Verify items</span>
+        </button>
+
+      </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-target="pageDashboard" onclick="switchTab('pageDashboard')">
+        <span class="material-symbols-outlined">home</span>
+        <span data-lang-key="home">Home</span>
+      </button>
+      <button class="nav-item" data-target="pageDetails" onclick="switchTab('pageDetails')">
+        <span class="material-symbols-outlined">fact_check</span>
+        <span data-lang-key="verify">Verify</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    // ----- JavaScript Logic -----
+
+    // Translations (English & Swahili)
+    const translations = {
+      en: {
+        deliveries: "Deliveries",
+        pickups: "Pickups",
+        user1: "Daniel K. William",
+        user2: "Travis B. Jhonson",
+        taskDetails: "Task Details",
+        customer: "Customer",
+        vehicle: "Vehicle",
+        location: "Location",
+        checkItems: "Check items to deliver",
+        item1: "Organic whole milk (2x)",
+        item2: "Sourdough bread (1x)",
+        item3: "Free-range eggs (1x)",
+        verifyItems: "Verify items",
+        home: "Home",
+        verify: "Verify",
+        done: "Done"
+      },
+      sw: {
+        deliveries: "Uwasilishaji",
+        pickups: "Uchukuaji",
+        user1: "Daniel K. William",
+        user2: "Travis B. Jhonson",
+        taskDetails: "Maelezo ya Kazi",
+        customer: "Mteja",
+        vehicle: "Gari",
+        location: "Mahali",
+        checkItems: "Angalia vitu vya kuwasilisha",
+        item1: "Maziwa kamili (2x)",
+        item2: "Mkate wa sourdough (1x)",
+        item3: "Mayai ya kienyeji (1x)",
+        verifyItems: "Thibitisha vitu",
+        home: "Nyumbani",
+        verify: "Thibitisha",
+        done: "Imekamilika"
+      }
+    };
+
+    let currentLang = 'en';
+
+    // DOM Elements
+    const pageDashboard = document.getElementById('pageDashboard');
+    const pageDetails = document.getElementById('pageDetails');
+    const tabItems = document.querySelectorAll('.nav-item');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const checkboxes = document.querySelectorAll('.item-check');
+
+    // Apply Translations
+    function applyLanguage(lang) {
+      currentLang = lang;
+      
+      // Update text content based on data attributes
+      document.querySelectorAll('[data-lang-key]').forEach(el => {
+        const key = el.getAttribute('data-lang-key');
+        if (translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+      
+      // Update Language Toggle active states
+      document.getElementById('langEn').classList.toggle('active', lang === 'en');
+      document.getElementById('langSw').classList.toggle('active', lang === 'sw');
+    }
+
+    // Language Toggle Listeners
+    document.getElementById('langEn').addEventListener('click', () => applyLanguage('en'));
+    document.getElementById('langSw').addEventListener('click', () => applyLanguage('sw'));
+
+    // Navigation / Tab Switching
+    function switchTab(pageId) {
+      // Hide all pages
+      pageDashboard.classList.remove('active');
+      pageDetails.classList.remove('active');
+      
+      // Show target page
+      document.getElementById(pageId).classList.add('active');
+
+      // Update Bottom Nav active states
+      tabItems.forEach(tab => {
+        if (tab.getAttribute('data-target') === pageId) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      // If navigating to details page, refresh button state
+      if (pageId === 'pageDetails') {
+        updateVerifyButton();
+      }
+    }
+
+    // Navigate to details from dashboard card click
+    function goToDetails(id) {
+      // In a real app, you would fetch and display data for the specific ID here.
+      // For this demo, we're just switching tabs.
+      switchTab('pageDetails');
+    }
+
+    // Checkbox Logic
+    function updateVerifyButton() {
+      const total = checkboxes.length;
+      const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+      
+      // Update visual style of list items
+      checkboxes.forEach(cb => {
+        const parent = cb.closest('.check-item');
+        if (cb.checked) {
+          parent.classList.add('checked');
+        } else {
+          parent.classList.remove('checked');
+        }
+      });
+
+      // Enable button only if ALL checkboxes are ticked
+      if (checked === total && total > 0) {
+        verifyBtn.disabled = false;
+      } else {
+        verifyBtn.disabled = true;
+      }
+    }
+
+    // Attach change listeners to checkboxes
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', updateVerifyButton);
+    });
+
+    // Verify Button Action
+    verifyBtn.addEventListener('click', () => {
+      if (!verifyBtn.disabled) {
+        // Show "Done" state briefly
+        const originalText = verifyBtn.innerHTML;
+        verifyBtn.innerHTML = `<span class="material-symbols-outlined filled" style="font-size: 20px;">check_circle</span> <span data-lang-key="done">${translations[currentLang].done}</span>`;
+        verifyBtn.style.backgroundColor = 'var(--md-sys-color-success)';
+        
+        // Reset after 1.5 seconds (Demo Behavior)
+        setTimeout(() => {
+          verifyBtn.innerHTML = originalText;
+          verifyBtn.style.backgroundColor = '';
+          verifyBtn.disabled = true;
+          
+          // Reset checkboxes
+          checkboxes.forEach(cb => cb.checked = false);
+          updateVerifyButton();
+          
+          // Go back to dashboard
+          switchTab('pageDashboard');
+        }, 1500);
+      }
+    });
+
+    // Initial Setup
+    applyLanguage('en');
+    updateVerifyButton();
+
+  </script>
+</body>
+</html>
