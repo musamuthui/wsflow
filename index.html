@@ -1,731 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>WSFlow · Delivery Verification</title>
-  
-  <!-- Google Fonts & Material Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f4ef">
+<title>WSFlow — Delivery operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f5f4ef;--white:#fff;--ink:#20231f;--muted:#777b72;--line:#e4e3dc;--green:#285b45;--green-soft:#e7eee8;--amber:#a66b21;--amber-soft:#f5eddf;--red:#a3473e;--red-soft:#f6e9e6;--shadow:0 18px 50px rgba(32,35,31,.06);--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;font-size:14px}button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh}.topbar{height:76px;padding:0 5.2vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(245,244,239,.94);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:12px;font:800 20px Manrope,sans-serif;letter-spacing:-.8px}.brand-mark{width:34px;height:34px;background:var(--green);color:white;border-radius:10px;display:grid;place-items:center;font:700 17px Manrope}.brand small{display:block;font:500 10px "DM Sans";letter-spacing:1.6px;color:var(--muted);margin-top:2px}.top-actions{display:flex;align-items:center;gap:18px}.date-label{color:var(--muted);font-size:12px}.avatar{width:36px;height:36px;border-radius:50%;background:#e6e4dc;display:grid;place-items:center;font-weight:700;color:var(--green)}.layout{display:grid;grid-template-columns:220px minmax(0,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 76px)}aside{padding:34px 20px 24px 5.2vw;border-right:1px solid var(--line)}.nav-label{font-size:10px;letter-spacing:1.7px;text-transform:uppercase;color:#96988f;margin:4px 0 13px 12px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;text-align:left;color:#686d65;padding:12px;border-radius:10px;display:flex;align-items:center;gap:12px;font-weight:600}.nav button.active{background:var(--green-soft);color:var(--green)}.nav button:hover{background:#ecebe5}.nav-icon{width:19px;text-align:center;font-size:16px}.side-note{margin-top:48px;padding:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.6}.main{padding:42px clamp(22px,4.5vw,68px) 70px;max-width:1260px;width:100%}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--green);font-weight:700;margin-bottom:12px}.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:34px}.page-head h1{font:700 clamp(30px,4vw,46px)/1.08 Manrope,sans-serif;letter-spacing:-2px;margin:0 0 10px}.page-head p{color:var(--muted);margin:0;font-size:14px}.primary,.secondary,.quiet{border-radius:9px;padding:11px 16px;border:1px solid var(--line);font-weight:700;font-size:12px}.primary{background:var(--green);border-color:var(--green);color:white}.primary:hover{background:#1f4a37}.secondary{background:white;color:var(--ink)}.quiet{background:transparent;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:34px}.stat{padding:20px 22px 20px 0;border-right:1px solid var(--line);margin-right:22px}.stat:last-child{border:0;margin:0}.stat-label{color:var(--muted);font-size:12px}.stat-value{font:700 30px Manrope;letter-spacing:-1.4px;margin:8px 0 3px}.stat-foot{font-size:11px;color:var(--muted)}.stat-foot strong{color:var(--green)}.section-head{display:flex;justify-content:space-between;align-items:center;margin:0 0 15px}.section-head h2{font:700 18px Manrope;letter-spacing:-.5px;margin:0}.filters{display:flex;gap:7px;flex-wrap:wrap}.filter{border:1px solid var(--line);background:transparent;border-radius:30px;padding:7px 12px;font-size:11px;color:var(--muted);font-weight:600}.filter.active{background:var(--ink);border-color:var(--ink);color:white}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.search{width:min(270px,100%);padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;outline:none}.search:focus{border-color:var(--green)}.delivery-list{display:grid;gap:9px}.delivery{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(120px,.8fr) minmax(120px,.8fr) auto;align-items:center;gap:18px;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:13px;padding:17px 19px;transition:.18s}.delivery:hover{background:white;box-shadow:var(--shadow);transform:translateY(-1px)}.customer{font-weight:700;font-size:14px;margin-bottom:5px}.sub{font-size:11px;color:var(--muted)}.delivery-ref{font-size:11px;color:var(--muted);margin-bottom:5px}.status{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;padding:6px 9px;border-radius:30px;white-space:nowrap}.status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}.status.progress{color:var(--amber);background:var(--amber-soft)}.status.pending{color:#626c77;background:#edf0f2}.status.done{color:var(--green);background:var(--green-soft)}.status.issue{color:var(--red);background:var(--red-soft)}.open-link{border:0;background:transparent;color:var(--green);font-size:12px;font-weight:700;padding:8px}.view{display:none}.view.active{display:block;animation:appear .2s ease}@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}.back{border:0;background:none;color:var(--muted);padding:0;margin-bottom:22px;font-weight:600}.detail-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:28px}.detail-top h1{font:700 34px Manrope;letter-spacing:-1.5px;margin:6px 0}.detail-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:22px}.panel{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:21px;margin-bottom:15px}.panel h3{font:700 15px Manrope;margin:0 0 17px}.item{display:grid;grid-template-columns:minmax(0,1fr) 95px 84px;align-items:center;gap:10px;padding:14px 0;border-top:1px solid var(--line)}.item:first-of-type{border-top:0}.item-name{font-weight:700}.item-meta{font-size:11px;color:var(--muted);margin-top:4px}.qty{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:8px;background:white;padding:5px}.qty button{border:0;background:none;width:22px;height:22px;font-size:17px;color:var(--green)}.qty span{font-weight:700;font-size:12px}.item-state{font-size:10px;color:var(--muted);text-align:right}.item-state.ok{color:var(--green);font-weight:700}.info-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:12px}.info-line:first-of-type{border-top:0}.info-line span:first-child{color:var(--muted)}.note{background:#f1f0e9;padding:12px;border-radius:9px;color:#64685f;font-size:11px;line-height:1.6}.field{display:grid;gap:7px;margin:14px 0}.field label{font-size:11px;font-weight:700;color:#555a52}.field input,.field textarea{border:1px solid var(--line);border-radius:8px;background:white;padding:11px;outline:none;width:100%}.field textarea{min-height:70px;resize:vertical}.signature{border:1px dashed #c8c9c0;border-radius:9px;background:#fff;width:100%;height:130px;touch-action:none}.signature-actions{display:flex;justify-content:space-between;align-items:center;margin-top:7px}.small{font-size:10px;color:var(--muted)}.upload{border:1px dashed #c8c9c0;border-radius:9px;padding:16px;text-align:center;color:var(--muted);font-size:11px;background:#fbfaf7}.upload input{max-width:100%;margin-top:9px}.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.thumbs img{width:65px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--line)}.full{width:100%;margin-top:12px}.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:white;padding:13px 17px;border-radius:9px;font-size:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s;z-index:30}.toast.show{opacity:1;transform:none}.mobile-menu{display:none}
+@media(max-width:850px){.layout{grid-template-columns:1fr}aside{position:fixed;z-index:20;bottom:0;left:0;right:0;height:65px;padding:5px 10px;background:#fbfaf7;border-right:0;border-top:1px solid var(--line)}.nav-label,.side-note{display:none}.nav{display:flex;justify-content:space-around}.nav button{flex-direction:column;gap:3px;padding:7px 13px;font-size:10px}.nav-icon{font-size:17px}.main{padding:30px 22px 95px}.topbar{padding:0 22px}.detail-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.date-label{display:none}.page-head{align-items:flex-start;flex-direction:column;margin-bottom:25px}.page-head h1{font-size:34px}.stats{grid-template-columns:repeat(2,1fr);row-gap:0}.stat{padding:15px 10px 15px 0;margin:0;border-bottom:1px solid var(--line)}.stat:nth-child(2){border-right:0;margin:0 0 0 12px}.stat:nth-child(3){border-bottom:0}.stat:nth-child(4){border:0;margin-left:12px}.stat-value{font-size:26px}.toolbar{align-items:flex-start;flex-direction:column}.search{width:100%}.delivery{grid-template-columns:1fr auto;gap:10px;padding:15px}.delivery .route,.delivery .driver{grid-column:1}.delivery .open-link{grid-column:2;grid-row:1/4}.item{grid-template-columns:minmax(0,1fr) 88px}.item-state{grid-column:1/-1;text-align:left}.detail-top{flex-direction:column}.detail-top h1{font-size:29px}.panel{padding:17px}.main{padding-left:17px;padding-right:17px}}
 
-  <style>
-    /* ----- Material UI Base Theme ----- */
-    :root {
-      --md-sys-color-primary: #1976D2;
-      --md-sys-color-primary-dark: #115293;
-      --md-sys-color-surface: #FFFFFF;
-      --md-sys-color-background: #F5F5F5;
-      --md-sys-color-on-surface: #212121;
-      --md-sys-color-on-surface-variant: #757575;
-      --md-sys-color-outline: #E0E0E0;
-      --md-sys-color-secondary-container: #E3F2FD;
-      --md-sys-color-on-secondary-container: #0D47A1;
-      --md-sys-color-success: #2E7D32;
-      --md-sys-color-success-bg: #E8F5E9;
-      --md-elevation-1: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
-      --md-elevation-2: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
-    }
+/* WSFlow storefront-inspired visual system */
+:root{--paper:#f4f6f8;--white:#fff;--ink:#172b4d;--muted:#667085;--line:#e4e8ee;--green:#145da0;--green-soft:#e8f1fa;--amber:#a85d00;--amber-soft:#fff2df;--red:#d62828;--red-soft:#fff0ef;--shadow:0 5px 18px rgba(23,43,77,.07);--radius:8px}
+*{box-sizing:border-box}
+body{background:#f4f6f8;color:#172b4d;font-family:"IBM Plex Sans",Arial,sans-serif;font-size:14px}
+.topbar{height:72px;padding:0 clamp(18px,4vw,64px);background:#fff;border-bottom:1px solid #e4e8ee;backdrop-filter:none;display:flex;gap:28px}
+.brand{font:700 21px "IBM Plex Sans",sans-serif;letter-spacing:-.5px;color:#123b67}
+.brand-mark{background:#145da0;border-radius:5px;font:700 17px "IBM Plex Sans"}
+.brand small{font:600 9px "IBM Plex Sans";letter-spacing:1.2px;color:#7b8794}
+.top-actions{gap:12px}
+.topbar-search{display:flex;align-items:center;gap:10px;max-width:470px;flex:1;background:#f4f6f8;border:1px solid #e4e8ee;border-radius:5px;padding:0 14px;height:40px;color:#7b8794}
+.topbar-search input{border:0;background:transparent;outline:none;width:100%;font:400 13px "IBM Plex Sans";color:#172b4d}
+.support-actions{display:flex;align-items:center;gap:8px}
+.support-btn{display:inline-flex;align-items:center;gap:7px;text-decoration:none;border-radius:5px;padding:9px 12px;font:600 12px "IBM Plex Sans";border:1px solid #dce3eb;background:#fff;color:#145da0;white-space:nowrap}
+.support-btn.whatsapp{background:#eaf7ef;border-color:#ccebd7;color:#167344}
+.support-btn.telegram{background:#edf6fc;border-color:#cfe5f4;color:#1676a9}
+.support-btn:hover{filter:brightness(.97)}
+.layout{display:block;max-width:1440px;min-height:calc(100vh - 72px);margin:auto}
+aside{display:none}
+.main{max-width:none;padding:28px clamp(18px,4vw,64px) 70px}
+.main:before{content:"";display:block;height:1px}
+.page-head{margin-bottom:24px;align-items:center}
+.page-head h1{font:700 clamp(28px,3vw,38px)/1.12 "IBM Plex Sans",sans-serif;letter-spacing:-1.1px;color:#172b4d}
+.page-head p{font-size:13px;color:#667085}
+.eyebrow{color:#145da0;letter-spacing:1.4px;font-size:10px}
+.primary{background:#145da0;border-color:#145da0;border-radius:5px;color:#fff}
+.primary:hover{background:#104b82}
+.secondary,.quiet{border-radius:5px}
+.stats{background:#fff;border:1px solid #e4e8ee;border-radius:7px;padding:0 18px;margin-bottom:28px}
+.stat{padding:17px 18px 17px 0;margin-right:18px}
+.stat-value{font:700 29px "IBM Plex Sans";letter-spacing:-.7px;color:#172b4d}
+.stat-label,.stat-foot{font-family:"IBM Plex Sans"}
+.section-head h2,.panel h3{font:600 17px "IBM Plex Sans";letter-spacing:-.2px}
+.filter{border-radius:5px;background:#fff;padding:8px 12px}
+.filter.active{background:#172b4d;border-color:#172b4d}
+.search{border-radius:5px;background:#fff}
+.delivery-list{gap:8px}
+.delivery{background:#fff;border:1px solid #e4e8ee;border-radius:6px;padding:16px 18px;box-shadow:none}
+.delivery:hover{box-shadow:0 4px 14px rgba(23,43,77,.07);transform:translateY(-1px)}
+.customer{color:#172b4d}
+.status{border-radius:4px}
+.panel{background:#fff;border:1px solid #e4e8ee;border-radius:7px;box-shadow:none}
+.item{border-color:#edf0f3}
+.qty{border-radius:5px}
+.field input,.field textarea{border-radius:5px}
+.signature{border-radius:5px}
+.upload{border-radius:5px;background:#fafbfd}
+.note{border-radius:5px;background:#f1f5f9}
+.avatar{border-radius:5px;background:#e8f1fa;color:#145da0}
+.toast{border-radius:5px}
+.filters{gap:6px}
+.catalog-nav{display:flex;align-items:center;gap:0;background:#fff;border-bottom:1px solid #e4e8ee;padding:0 clamp(18px,4vw,64px);overflow:auto}
+.catalog-nav button{border:0;border-bottom:3px solid transparent;background:transparent;padding:13px 16px 11px;color:#475467;font:600 12px "IBM Plex Sans";white-space:nowrap}
+.catalog-nav button.active{color:#145da0;border-bottom-color:#d62828}
+.catalog-nav button:hover{color:#145da0;background:#f8fafc}
+.hero-strip{display:flex;justify-content:space-between;align-items:center;gap:24px;background:#123b67;color:#fff;border-radius:7px;padding:23px 26px;margin:0 0 25px;position:relative;overflow:hidden}
+.hero-strip:after{content:"";position:absolute;right:8%;top:-65px;width:190px;height:190px;border:28px solid rgba(255,255,255,.08);border-radius:50%;pointer-events:none}
+.hero-strip .hero-copy{position:relative;z-index:1}
+.hero-strip .hero-kicker{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#c6d9ed;font-weight:600;margin-bottom:7px}
+.hero-strip h2{font:700 23px/1.2 "IBM Plex Sans";letter-spacing:-.4px;margin:0 0 6px}
+.hero-strip p{margin:0;color:#d9e6f2;font-size:12px}
+.hero-strip .hero-tag{background:#d62828;color:#fff;border-radius:3px;padding:8px 11px;font-size:10px;font-weight:700;letter-spacing:.5px;white-space:nowrap;position:relative;z-index:1}
+@media(max-width:850px){
+ .topbar{height:auto;min-height:68px;flex-wrap:wrap;padding:12px 16px;gap:12px}
+ .topbar-search{order:3;flex-basis:100%;max-width:none}
+ .top-actions{margin-left:auto}
+ .support-actions{gap:5px}
+ .support-btn{padding:8px 9px;font-size:11px}
+ .layout{min-height:calc(100vh - 112px)}
+ .main{padding:22px 16px 92px}
+ .catalog-nav{padding:0 12px}
+ .catalog-nav button{padding:12px 13px 10px}
+}
+@media(max-width:600px){
+ .support-btn span{display:none}
+ .support-btn{width:36px;height:34px;justify-content:center;padding:0;font-size:15px}
+ .hero-strip{padding:18px;align-items:flex-start}
+ .hero-strip h2{font-size:20px}
+ .hero-strip .hero-tag{font-size:9px;padding:7px}
+ .stats{padding:0 12px}
+ .stat{padding:14px 8px 14px 0}
+}
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
 
-    body {
-      background-color: var(--md-sys-color-background);
-      color: var(--md-sys-color-on-surface);
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-    }
+/* Glass header, compact-on-scroll navigation and account menu */
+:root{--glass:rgba(255,255,255,.76);--glass-border:rgba(255,255,255,.78);--glass-shadow:0 10px 32px rgba(23,43,77,.09)}
+html{scroll-padding-top:120px}
+.topbar{position:sticky;top:0;z-index:60;height:76px;background:rgba(255,255,255,.76);border-bottom:1px solid rgba(221,229,238,.72);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:height .22s ease,padding .22s ease,box-shadow .22s ease}
+.catalog-nav{position:sticky;top:76px;z-index:55;height:48px;background:rgba(248,250,252,.78);border-bottom:1px solid rgba(221,229,238,.72);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:top .22s ease,height .22s ease,box-shadow .22s ease}
+.topbar.compact{height:56px;box-shadow:0 5px 20px rgba(23,43,77,.07)}
+.topbar.compact .brand small,.topbar.compact .profile-name,.topbar.compact .profile-chevron{display:none}
+.topbar.compact .brand-mark{width:31px;height:31px}
+.topbar.compact .topbar-search{height:34px}
+.topbar.compact .support-btn{padding-top:7px;padding-bottom:7px}
+.catalog-nav.compact{top:56px;height:38px;box-shadow:0 7px 18px rgba(23,43,77,.04)}
+.catalog-nav button{height:100%;transition:padding .2s ease;font-size:12px}
+.catalog-nav.compact button{padding-top:7px;padding-bottom:6px}
+.profile-wrap{position:relative}
+.profile-trigger{display:flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:24px;padding:4px 8px 4px 4px;background:transparent;color:#172b4d;font:600 12px "IBM Plex Sans";transition:background .15s,border-color .15s}
+.profile-trigger:hover,.profile-trigger[aria-expanded="true"]{background:rgba(255,255,255,.85);border-color:#dce5ef}
+.profile-trigger .avatar{width:34px;height:34px;background:#dceaf6;color:#145da0}
+.profile-chevron{font-size:15px;color:#667085}
+.profile-menu{position:absolute;right:0;top:calc(100% + 12px);width:248px;padding:10px;background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.9);border-radius:13px;box-shadow:0 18px 48px rgba(23,43,77,.18);backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);z-index:90;animation:menuIn .16s ease}
+.profile-menu[hidden]{display:none}
+@keyframes menuIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.profile-menu-head{display:flex;align-items:center;gap:11px;padding:9px 8px 13px}
+.profile-menu-head strong{display:block;font-size:13px;color:#172b4d}
+.profile-menu-head small{display:block;color:#667085;font-size:11px;margin-top:3px}
+.avatar.large{width:40px;height:40px;font-size:13px}
+.profile-company{padding:9px 8px;border-top:1px solid #e8edf2;border-bottom:1px solid #e8edf2;color:#667085;font-size:10px;letter-spacing:.2px}
+.profile-menu>button,.profile-menu-foot button{width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 9px;border:0;background:transparent;border-radius:7px;text-align:left;color:#344054;font:500 12px "IBM Plex Sans"}
+.profile-menu>button:hover,.profile-menu-foot button:hover{background:#f0f5fa}
+.profile-menu>button span{color:#98a2b3;font-size:17px}
+.profile-menu-foot{border-top:1px solid #e8edf2;margin-top:5px;padding-top:5px}
+.profile-menu-foot button{color:#b42318}
+.delivery,.panel,.stats,.hero-strip{backdrop-filter:none}
+.delivery{background:rgba(255,255,255,.82);border-color:rgba(222,230,238,.9)}
+.panel{background:rgba(255,255,255,.84);border-color:rgba(222,230,238,.9)}
+.hero-strip{box-shadow:0 12px 28px rgba(18,59,103,.12)}
+@media(max-width:850px){
+ .topbar{height:104px;padding:10px 16px;display:grid;grid-template-columns:1fr auto;grid-template-rows:38px 40px;gap:7px 10px}
+ .topbar .brand{grid-column:1;grid-row:1}
+ .topbar .top-actions{grid-column:2;grid-row:1;gap:7px}
+ .topbar-search{grid-column:1/-1;grid-row:2;max-width:none;width:100%;height:37px}
+ .catalog-nav{top:104px;height:44px;padding:0 8px;gap:0;white-space:nowrap;overflow-x:auto;scrollbar-width:none}
+ .catalog-nav::-webkit-scrollbar{display:none}
+ .catalog-nav button{padding:10px 14px 8px;flex:0 0 auto}
+ .topbar.compact{height:54px;padding:7px 14px;display:flex;gap:10px}
+ .topbar.compact .brand{flex:0 0 auto}
+ .topbar.compact .top-actions{margin-left:auto}
+ .topbar.compact .topbar-search{display:none}
+ .topbar.compact .brand-mark{width:31px;height:31px}
+ .catalog-nav.compact{top:54px;height:36px}
+ .catalog-nav.compact button{padding:7px 13px 5px}
+ .profile-trigger{padding:2px}
+ .profile-trigger .avatar{width:32px;height:32px}
+ .profile-menu{top:calc(100% + 9px)}
+}
+@media(max-width:600px){
+ .support-btn{width:34px;height:34px;display:grid;place-items:center;padding:0}
+ .profile-trigger .profile-name,.profile-trigger .profile-chevron{display:none}
+ .topbar.compact{height:50px}
+ .catalog-nav{top:104px}
+ .catalog-nav.compact{top:50px;height:35px}
+ .catalog-nav button{font-size:11px;padding-left:12px;padding-right:12px}
+ .main{padding-top:23px}
+ .page-head h1{font-size:30px}
+ .hero-strip{border-radius:8px}
+}
+@media(prefers-reduced-motion:reduce){.topbar,.catalog-nav,.profile-menu{transition:none;animation:none}html{scroll-behavior:auto}}
 
-    /* App Shell - Mobile First */
-    .app-shell {
-      width: 100%;
-      max-width: 480px;
-      background-color: var(--md-sys-color-background);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    @media (min-width: 600px) {
-      body { padding: 20px; align-items: center; }
-      .app-shell {
-        min-height: calc(100vh - 40px);
-        border-radius: 24px;
-        box-shadow: var(--md-elevation-2);
-        overflow: hidden;
-      }
-    }
-
-    /* Icons */
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
-
-    /* Top App Bar */
-    .top-app-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background-color: var(--md-sys-color-surface);
-      box-shadow: var(--md-elevation-1);
-      z-index: 10;
-      position: sticky;
-      top: 0;
-    }
-
-    .brand {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--md-sys-color-primary);
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .icon-button {
-      background: transparent;
-      border: none;
-      color: var(--md-sys-color-on-surface-variant);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .icon-button:hover, .icon-button:active { background-color: rgba(0,0,0,0.05); }
-
-    /* Language Toggle (Material Style) */
-    .lang-toggle {
-      display: flex;
-      align-items: center;
-      background: var(--md-sys-color-surface);
-      border: 1px solid var(--md-sys-color-outline);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    .lang-toggle button {
-      background: transparent;
-      border: none;
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--md-sys-color-on-surface-variant);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lang-toggle button.active {
-      background: var(--md-sys-color-secondary-container);
-      color: var(--md-sys-color-on-secondary-container);
-    }
-
-    /* Main Content Area */
-    .app-main {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--md-sys-color-background);
-    }
-
-    /* Page Transitions */
-    .page { display: none; flex-direction: column; animation: fadeIn 0.2s ease; }
-    .page.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Segmented Control (Material Style) */
-    .segmented-control {
-      display: flex;
-      background: #E0E0E0;
-      padding: 4px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-    }
-    .segmented-control button {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 10px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--md-sys-color-on-surface-variant);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .segmented-control button.active {
-      background: var(--md-sys-color-surface);
-      color: var(--md-sys-color-primary);
-      box-shadow: var(--md-elevation-1);
-    }
-
-    /* Task Cards (Slide 2 Base) */
-    .task-card {
-      background: var(--md-sys-color-surface);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: var(--md-elevation-1);
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .task-card:active {
-      transform: scale(0.98);
-      box-shadow: var(--md-elevation-2);
-    }
-
-    .task-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .task-user {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .task-user .name {
-      font-weight: 500;
-      font-size: 1rem;
-      color: var(--md-sys-color-on-surface);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .task-user .id, .task-user .plate {
-      font-size: 0.8rem;
-      color: var(--md-sys-color-on-surface-variant);
-    }
-
-    .task-image {
-      width: 64px;
-      height: 48px;
-      background: #F0F0F0;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .task-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .task-locations {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .location-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.8rem;
-      color: var(--md-sys-color-on-surface-variant);
-      background: #F5F5F5;
-      padding: 6px 10px;
-      border-radius: 16px;
-      flex: 1;
-      justify-content: center;
-    }
-
-    /* Detail Page (Slide 3 Base) */
-    .detail-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .detail-header h2 {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: var(--md-sys-color-on-surface);
-    }
-
-    .info-card {
-      background: var(--md-sys-color-surface);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--md-elevation-1);
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--md-sys-color-outline);
-    }
-    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .info-row:first-child { padding-top: 0; }
-    
-    .info-label {
-      color: var(--md-sys-color-on-surface-variant);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-    }
-    .info-value {
-      font-weight: 500;
-      color: var(--md-sys-color-on-surface);
-      font-size: 0.9rem;
-    }
-
-    /* Checklist */
-    .checklist-container {
-      background: var(--md-sys-color-surface);
-      border-radius: 12px;
-      padding: 8px 16px;
-      margin-bottom: 24px;
-      box-shadow: var(--md-elevation-1);
-    }
-    .check-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--md-sys-color-outline);
-    }
-    .check-item:last-child { border-bottom: none; }
-    .check-item input[type="checkbox"] {
-      width: 24px;
-      height: 24px;
-      margin-right: 16px;
-      accent-color: var(--md-sys-color-primary);
-      cursor: pointer;
-    }
-    .check-text {
-      flex: 1;
-      font-size: 0.95rem;
-      color: var(--md-sys-color-on-surface);
-      transition: color 0.2s;
-    }
-    .check-item.checked .check-text {
-      color: var(--md-sys-color-on-surface-variant);
-      text-decoration: line-through;
-    }
-
-    /* Buttons */
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 14px;
-      border-radius: 24px;
-      border: none;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s, box-shadow 0.2s;
-      gap: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .btn-primary {
-      background: var(--md-sys-color-primary);
-      color: white;
-      box-shadow: var(--md-elevation-1);
-    }
-    .btn-primary:hover { background: var(--md-sys-color-primary-dark); }
-    .btn-primary:disabled {
-      background: #BDBDBD;
-      color: #757575;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    /* Bottom Navigation */
-    .bottom-nav {
-      display: flex;
-      background: var(--md-sys-color-surface);
-      padding: 8px 0;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0px -1px 3px rgba(0,0,0,0.1);
-      z-index: 10;
-    }
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      background: transparent;
-      border: none;
-      color: var(--md-sys-color-on-surface-variant);
-      font-size: 0.75rem;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 8px 16px;
-      border-radius: 16px;
-      transition: 0.2s;
-    }
-    .nav-item.active { color: var(--md-sys-color-primary); }
-    .nav-item.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
-
-  </style>
+</style>
 </head>
 <body>
-
-  <div class="app-shell" id="appShell">
-    
-    <!-- Top App Bar -->
-    <header class="top-app-bar">
-      <div class="brand">
-        <span class="material-symbols-outlined filled" style="color: var(--md-sys-color-primary);">local_shipping</span>
-        WSFlow
-      </div>
-      
-      <div class="lang-toggle">
-        <button id="langEn" class="active">EN</button>
-        <button id="langSw">SW</button>
-      </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="app-main">
-      
-      <!-- ================= PAGE 1: DASHBOARD (Slide 2) ================= -->
-      <div class="page active" id="pageDashboard">
-        
-        <!-- Segmented Control -->
-        <div class="segmented-control">
-          <button class="active" data-tab="delivery">
-            <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
-            <span data-lang-key="deliveries">Deliveries</span>
-          </button>
-          <button data-tab="pickup">
-            <span class="material-symbols-outlined" style="font-size: 20px;">download</span>
-            <span data-lang-key="pickups">Pickups</span>
-          </button>
-        </div>
-
-        <!-- Task Card 1 -->
-        <div class="task-card" onclick="goToDetails(1)">
-          <div class="task-header">
-            <div class="task-user">
-              <div class="name">
-                <span data-lang-key="user1">Daniel K. William</span> 
-                <span class="material-symbols-outlined" style="font-size: 16px; color: #757575;">person</span>
-              </div>
-              <div class="id">ID: 200886</div>
-              <div class="plate">Plate: 28-FS-6482</div>
-            </div>
-            <div class="task-image">
-              <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car">
-            </div>
-          </div>
-          <div class="task-locations">
-            <div class="location-item">
-              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">flight</span>
-              Airport
-            </div>
-            <div class="location-item">
-              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">storefront</span>
-              Branch
-            </div>
-          </div>
-        </div>
-
-        <!-- Task Card 2 -->
-        <div class="task-card" onclick="goToDetails(2)">
-          <div class="task-header">
-            <div class="task-user">
-              <div class="name">
-                <span data-lang-key="user2">Travis B. Jhonson</span> 
-                <span class="material-symbols-outlined" style="font-size: 16px; color: #757575;">person</span>
-              </div>
-              <div class="id">ID: 505642</div>
-              <div class="plate">Plate: 57-LX-4060</div>
-            </div>
-            <div class="task-image">
-              <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png" alt="Car">
-            </div>
-          </div>
-          <div class="task-locations">
-            <div class="location-item">
-              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">flight</span>
-              Airport
-            </div>
-            <div class="location-item">
-              <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">storefront</span>
-              Branch
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ================= PAGE 2: TASK DETAILS (Slide 3) ================= -->
-      <div class="page" id="pageDetails">
-        
-        <div class="detail-header">
-          <button class="icon-button" onclick="switchTab('pageDashboard')">
-            <span class="material-symbols-outlined">arrow_back</span>
-          </button>
-          <h2 data-lang-key="taskDetails">Task Details</h2>
-        </div>
-
-        <!-- Customer Info Card -->
-        <div class="info-card">
-          <div class="info-row">
-            <div class="info-label">
-              <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
-              <span data-lang-key="customer">Customer</span>
-            </div>
-            <div class="info-value" id="detailCustomer">Daniel K. William</div>
-          </div>
-          
-          <div class="info-row">
-            <div class="info-label">
-              <span class="material-symbols-outlined" style="font-size: 20px;">directions_car</span>
-              <span data-lang-key="vehicle">Vehicle</span>
-            </div>
-            <div class="info-value" id="detailVehicle">Blue Sedan · 28-FS-6482</div>
-          </div>
-          
-          <div class="info-row">
-            <div class="info-label">
-              <span class="material-symbols-outlined" style="font-size: 20px;">location_on</span>
-              <span data-lang-key="location">Location</span>
-            </div>
-            <div class="info-value">King St W, Toronto</div>
-          </div>
-        </div>
-
-        <!-- Checklist Card -->
-        <div style="margin-bottom: 8px; font-weight: 500; font-size: 1rem; color: var(--md-sys-color-on-surface);" data-lang-key="checkItems">
-          Check items to deliver
-        </div>
-        
-        <div class="checklist-container" id="checklistContainer">
-          <div class="check-item">
-            <input type="checkbox" class="item-check" checked>
-            <span class="check-text" data-lang-key="item1">Organic whole milk (2x)</span>
-          </div>
-          <div class="check-item">
-            <input type="checkbox" class="item-check" checked>
-            <span class="check-text" data-lang-key="item2">Sourdough bread (1x)</span>
-          </div>
-          <div class="check-item">
-            <input type="checkbox" class="item-check">
-            <span class="check-text" data-lang-key="item3">Free-range eggs (1x)</span>
-          </div>
-        </div>
-
-        <!-- Action Button -->
-        <button class="btn btn-primary" id="verifyBtn" disabled>
-          <span class="material-symbols-outlined" style="font-size: 20px;">check_circle</span>
-          <span data-lang-key="verifyItems">Verify items</span>
-        </button>
-
-      </div>
-
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-      <button class="nav-item active" data-target="pageDashboard" onclick="switchTab('pageDashboard')">
-        <span class="material-symbols-outlined">home</span>
-        <span data-lang-key="home">Home</span>
-      </button>
-      <button class="nav-item" data-target="pageDetails" onclick="switchTab('pageDetails')">
-        <span class="material-symbols-outlined">fact_check</span>
-        <span data-lang-key="verify">Verify</span>
-      </button>
-    </nav>
-
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">W</div><div>wsflow<small>WHOLESALE DELIVERY NETWORK</small></div></div>
+  <label class="topbar-search" aria-label="Search workspace"><span>⌕</span><input id="globalSearch" placeholder="Search deliveries, customers or references"></label>
+  <div class="top-actions">
+    <div class="support-actions">
+      <a class="support-btn whatsapp" href="#" id="whatsappSupport" aria-label="WhatsApp support"><strong>◉</strong><span>WhatsApp</span></a>
+      <a class="support-btn telegram" href="#" id="telegramSupport" aria-label="Telegram support"><strong>➤</strong><span>Telegram</span></a>
+    </div>
+    <span class="date-label" id="today"></span><div class="profile-wrap"><button class="profile-trigger" id="profileTrigger" aria-expanded="false" aria-controls="profileMenu" aria-label="Open user profile"><span class="avatar">MK</span><span class="profile-name">Michael</span><span class="profile-chevron">⌄</span></button><div class="profile-menu" id="profileMenu" hidden><div class="profile-menu-head"><span class="avatar large">MK</span><div><strong>Michael</strong><small>Operations admin</small></div></div><div class="profile-company">WSFlow · Wholesale operations</div><button type="button" data-profile-action="profile">My profile <span>›</span></button><button type="button" data-profile-action="settings">Account settings <span>›</span></button><div class="profile-menu-foot"><button type="button" data-profile-action="signout">Sign out</button></div></div></div>
   </div>
+</header>
+<nav class="catalog-nav" aria-label="Main navigation">
+  <button class="active" data-view="dashboard">Overview</button>
+  <button data-view="deliveries">Deliveries</button>
+  <button data-view="pickups">Pickups & returns</button>
+  <button data-view="customers">Customers</button>
+</nav>
+<div class="layout">
+<aside>
+  <div class="nav-label">Workspace</div>
+  <nav class="nav">
+    <button class="active" data-view="dashboard"><span class="nav-icon">▦</span>Overview</button>
+    <button data-view="deliveries"><span class="nav-icon">↗</span>Deliveries</button>
+    <button data-view="pickups"><span class="nav-icon">↙</span>Pickups</button>
+    <button data-view="customers"><span class="nav-icon">◎</span>Customers</button>
+  </nav>
+  <div class="side-note">A clearer record of every handover.<br>WSFlow · Operations workspace</div>
+</aside>
+<main class="main">
+<section class="view active" id="dashboard">
+  <div class="page-head"><div><div class="eyebrow">Monday operations / Overview</div><h1>Good morning,<br>Michael.</h1><p>Here is what is happening across your deliveries today.</p></div><button class="primary" onclick="showToast('New delivery creation will be connected to the backend.')">＋ &nbsp;New delivery</button></div>
+  <div class="hero-strip">
+    <div class="hero-copy"><div class="hero-kicker">WSFlow operations desk</div><h2>Every order. Every handover. Accounted for.</h2><p>Track deliveries, resolve exceptions and keep customers informed.</p></div>
+    <div class="hero-tag">WHOLESALE OPERATIONS</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Deliveries today</div><div class="stat-value" id="stat-total">08</div><div class="stat-foot">Across active routes</div></div>
+    <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="stat-done">03</div><div class="stat-foot"><strong>On record</strong> · signed off</div></div>
+    <div class="stat"><div class="stat-label">In progress</div><div class="stat-value" id="stat-progress">04</div><div class="stat-foot">Drivers on the road</div></div>
+    <div class="stat"><div class="stat-label">Needs attention</div><div class="stat-value" id="stat-issue">01</div><div class="stat-foot">Review required</div></div>
+  </div>
+  <div class="section-head"><h2>Today's activity</h2><div class="filters"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="progress">In progress</button><button class="filter" data-filter="done">Completed</button><button class="filter" data-filter="issue">Attention</button></div></div>
+  <div class="toolbar"><input class="search" id="search" placeholder="Search customer or reference…" aria-label="Search deliveries"><span class="small">Showing sample operational data</span></div>
+  <div class="delivery-list" id="deliveryList"></div>
+</section>
+<section class="view" id="deliveries">
+  <div class="page-head"><div><div class="eyebrow">Workspace / Deliveries</div><h1>Deliveries</h1><p>Track each handover from dispatch to customer confirmation.</p></div></div>
+  <div class="delivery-list" id="deliveryListAll"></div>
+</section>
+<section class="view" id="pickups">
+  <div class="page-head"><div><div class="eyebrow">Workspace / Collections</div><h1>Pickups</h1><p>Returns and collections scheduled for today.</p></div></div>
+  <div class="empty">No pickups have been assigned yet.<br><span class="small">Pickup management can be connected when the workflow is defined.</span></div>
+</section>
+<section class="view" id="customers">
+  <div class="page-head"><div><div class="eyebrow">Workspace / Directory</div><h1>Customers</h1><p>Customer records associated with today's sample deliveries.</p></div></div>
+  <div class="delivery-list" id="customerList"></div>
+</section>
+<section class="view" id="detail">
+  <button class="back" onclick="showView('dashboard')">← &nbsp;Back to overview</button>
+  <div class="detail-top"><div><div class="eyebrow" id="detail-ref">DELIVERY / WS-2026-0042</div><h1 id="detail-name">Customer name</h1><p class="sub" id="detail-address">Delivery address</p></div><span class="status progress" id="detail-status">In progress</span></div>
+  <div class="detail-grid">
+    <div>
+      <div class="panel"><h3>Items on this delivery</h3><div class="small" style="margin-bottom:8px">Update the quantity actually received. Shortages and excess quantities remain visible.</div><div id="items"></div></div>
+      <div class="panel"><h3>Delivery evidence</h3><div class="upload">Add photographs of the delivered goods<br><input id="photos" type="file" accept="image/*" multiple capture="environment"><div class="thumbs" id="thumbs"></div></div><div class="field"><label for="driver-note">Driver's note / discrepancy details</label><textarea id="driver-note" placeholder="Add a note about damaged, missing or substituted items…"></textarea></div></div>
+    </div>
+    <div>
+      <div class="panel"><h3>Delivery information</h3><div class="info-line"><span>Customer</span><strong id="info-customer"></strong></div><div class="info-line"><span>Reference</span><strong id="info-ref"></strong></div><div class="info-line"><span>Assigned driver</span><strong id="info-driver"></strong></div><div class="info-line"><span>Vehicle</span><strong id="info-vehicle"></strong></div><div class="info-line"><span>Scheduled</span><strong id="info-time"></strong></div></div>
+      <div class="panel"><h3>Customer acknowledgement</h3><div class="field"><label for="signer">Name of person receiving</label><input id="signer" placeholder="Full name"></div><label class="small" style="font-weight:700;display:block;margin:12px 0 8px">Signature</label><canvas class="signature" id="signature" aria-label="Signature pad"></canvas><div class="signature-actions"><span class="small">Sign inside the box</span><button class="quiet" id="clear-sign">Clear signature</button></div><div class="note" style="margin-top:14px">The signature acknowledges the quantities and exceptions recorded above. It does not imply that missing or damaged items were received.</div><button class="primary full" id="complete">Save delivery record</button></div>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
 
-  <script>
-    // ----- JavaScript Logic -----
+// Add your business support details here before publishing.
+// WhatsApp format: country code + number, digits only (e.g. 2547XXXXXXXX).
+const SUPPORT_WHATSAPP_NUMBER = '';
+// Telegram public username, without the @ symbol.
+const SUPPORT_TELEGRAM_USERNAME = '';
+function setupSupportLinks(){
+  const wa=document.getElementById('whatsappSupport');
+  const tg=document.getElementById('telegramSupport');
+  wa.addEventListener('click',e=>{
+    e.preventDefault();
+    if(SUPPORT_WHATSAPP_NUMBER) window.open('https://wa.me/'+SUPPORT_WHATSAPP_NUMBER,'_blank','noopener');
+    else showToast('Add your WhatsApp business number in the support settings.');
+  });
+  tg.addEventListener('click',e=>{
+    e.preventDefault();
+    if(SUPPORT_TELEGRAM_USERNAME) window.open('https://t.me/'+SUPPORT_TELEGRAM_USERNAME,'_blank','noopener');
+    else showToast('Add your Telegram support username in the support settings.');
+  });
+}
 
-    // Translations (English & Swahili)
-    const translations = {
-      en: {
-        deliveries: "Deliveries",
-        pickups: "Pickups",
-        user1: "Daniel K. William",
-        user2: "Travis B. Jhonson",
-        taskDetails: "Task Details",
-        customer: "Customer",
-        vehicle: "Vehicle",
-        location: "Location",
-        checkItems: "Check items to deliver",
-        item1: "Organic whole milk (2x)",
-        item2: "Sourdough bread (1x)",
-        item3: "Free-range eggs (1x)",
-        verifyItems: "Verify items",
-        home: "Home",
-        verify: "Verify",
-        done: "Done"
-      },
-      sw: {
-        deliveries: "Uwasilishaji",
-        pickups: "Uchukuaji",
-        user1: "Daniel K. William",
-        user2: "Travis B. Jhonson",
-        taskDetails: "Maelezo ya Kazi",
-        customer: "Mteja",
-        vehicle: "Gari",
-        location: "Mahali",
-        checkItems: "Angalia vitu vya kuwasilisha",
-        item1: "Maziwa kamili (2x)",
-        item2: "Mkate wa sourdough (1x)",
-        item3: "Mayai ya kienyeji (1x)",
-        verifyItems: "Thibitisha vitu",
-        home: "Nyumbani",
-        verify: "Thibitisha",
-        done: "Imekamilika"
-      }
-    };
+const deliveries=[
+{id:'WS-2026-0042',customer:'Kahawa Corner Stores',address:'Industrial Area, Nairobi',driver:'Peter Mwangi',vehicle:'KDA 482B',time:'09:30 AM',status:'progress',items:[['Maize flour · 2 kg',24,24],['Cooking oil · 1 L',12,10],['White sugar · 2 kg',10,10]]},
+{id:'WS-2026-0043',customer:'Green Basket Supermarket',address:'Ruiru, Kiambu',driver:'James Kariuki',vehicle:'KDC 193A',time:'10:15 AM',status:'progress',items:[['Rice · 5 kg',18,18],['Wheat flour · 2 kg',20,20],['Tea leaves · 500 g',8,8]]},
+{id:'WS-2026-0044',customer:'Mwangaza Mini Mart',address:'Thika Road, Nairobi',driver:'David Otieno',vehicle:'KDE 720C',time:'11:00 AM',status:'issue',items:[['Laundry detergent · 1 kg',15,12],['Bar soap · pack of 6',10,10]]},
+{id:'WS-2026-0045',customer:'Ridgeway Wholesalers',address:'Ridgeways, Nairobi',driver:'Peter Mwangi',vehicle:'KDA 482B',time:'11:45 AM',status:'done',items:[['Bottled water · 1 L',30,30],['Tissue paper · 10 pack',12,12]]},
+{id:'WS-2026-0046',customer:'Township Retail Ltd',address:'Nakuru Town',driver:'Mary Wanjiku',vehicle:'KDG 511D',time:'12:30 PM',status:'progress',items:[['Maize flour · 2 kg',40,40],['Beans · 1 kg',20,20]]},
+{id:'WS-2026-0047',customer:'Sunrise Distributors',address:'Westlands, Nairobi',driver:'James Kariuki',vehicle:'KDC 193A',time:'01:15 PM',status:'done',items:[['Cooking oil · 5 L',8,8],['Rice · 25 kg',5,5]]}
+];
+let selected=null,filter='all',signed=false;
+const statusText={progress:'In progress',done:'Completed',issue:'Needs attention',pending:'Awaiting dispatch'};
+const statusClass=s=>s==='done'?'done':s==='issue'?'issue':s==='pending'?'pending':'progress';
+function card(d){return `<article class="delivery"><div><div class="delivery-ref">${d.id}</div><div class="customer">${d.customer}</div><div class="sub">${d.address}</div></div><div class="route"><div class="sub">DRIVER</div><strong>${d.driver}</strong><div class="sub">${d.vehicle}</div></div><div class="driver"><div class="sub">SCHEDULED</div><strong>${d.time}</strong><div style="margin-top:7px"><span class="status ${statusClass(d.status)}">${statusText[d.status]}</span></div></div><button class="open-link" onclick="openDelivery('${d.id}')">View record ↗</button></article>`}
+function render(){const q=(document.getElementById('search')?.value||'').toLowerCase();const rows=deliveries.filter(d=>(filter==='all'||d.status===filter)&&(`${d.customer} ${d.id} ${d.driver}`).toLowerCase().includes(q));document.getElementById('deliveryList').innerHTML=rows.map(card).join('')||'<div class="empty">No matching deliveries.</div>';document.getElementById('deliveryListAll').innerHTML=deliveries.map(card).join('');document.getElementById('customerList').innerHTML=[...new Set(deliveries.map(d=>d.customer))].map(name=>{const d=deliveries.find(x=>x.customer===name);return `<article class="delivery"><div><div class="customer">${name}</div><div class="sub">${d.address}</div></div><div class="sub">${deliveries.filter(x=>x.customer===name).length} delivery record(s)</div><button class="open-link" onclick="openDelivery('${d.id}')">View latest ↗</button></article>`}).join('');document.getElementById('stat-total').textContent=String(deliveries.length).padStart(2,'0');document.getElementById('stat-done').textContent=String(deliveries.filter(d=>d.status==='done').length).padStart(2,'0');document.getElementById('stat-progress').textContent=String(deliveries.filter(d=>d.status==='progress').length).padStart(2,'0');document.getElementById('stat-issue').textContent=String(deliveries.filter(d=>d.status==='issue').length).padStart(2,'0')}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button,.catalog-nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));closeProfileMenu?.();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button,.catalog-nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));render()}));
+document.getElementById('search').addEventListener('input',render);
+function openDelivery(id){selected=deliveries.find(d=>d.id===id);if(!selected)return;document.getElementById('detail-ref').textContent='DELIVERY / '+selected.id;document.getElementById('detail-name').textContent=selected.customer;document.getElementById('detail-address').textContent=selected.address;document.getElementById('detail-status').textContent=statusText[selected.status];document.getElementById('detail-status').className='status '+statusClass(selected.status);document.getElementById('info-customer').textContent=selected.customer;document.getElementById('info-ref').textContent=selected.id;document.getElementById('info-driver').textContent=selected.driver;document.getElementById('info-vehicle').textContent=selected.vehicle;document.getElementById('info-time').textContent=selected.time;document.getElementById('items').innerHTML=selected.items.map((it,i)=>`<div class="item"><div><div class="item-name">${it[0]}</div><div class="item-meta">Ordered: ${it[1]} units</div></div><div class="qty"><button onclick="changeQty(${i},-1)" aria-label="Decrease quantity">−</button><span id="qty-${i}">${it[2]}</span><button onclick="changeQty(${i},1)" aria-label="Increase quantity">＋</button></div><div class="item-state ${it[2]===it[1]?'ok':''}" id="state-${i}">${it[2]===it[1]?'Complete':it[2]<it[1]?'Short by '+(it[1]-it[2]):'Over by '+(it[2]-it[1])}</div></div>`).join('');document.getElementById('driver-note').value='';document.getElementById('signer').value='';document.getElementById('photos').value='';document.getElementById('thumbs').innerHTML='';clearSignature();showView('detail')}
+function changeQty(i,delta){const item=selected.items[i];item[2]=Math.max(0,Math.min(item[1]+20,item[2]+delta));document.getElementById('qty-'+i).textContent=item[2];const state=document.getElementById('state-'+i);state.textContent=item[2]===item[1]?'Complete':item[2]<item[1]?'Short by '+(item[1]-item[2]):'Over by '+(item[2]-item[1]);state.className='item-state '+(item[2]===item[1]?'ok':'')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+document.getElementById('photos').addEventListener('change',e=>{const wrap=document.getElementById('thumbs');wrap.innerHTML='';[...e.target.files].forEach(file=>{if(!file.type.startsWith('image/'))return;const img=document.createElement('img');img.src=URL.createObjectURL(file);img.alt='Delivery evidence preview';wrap.appendChild(img)})});
+const canvas=document.getElementById('signature'),ctx=canvas.getContext('2d');let drawing=false,hasInk=false;
+function sizeCanvas(){const rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;canvas.width=rect.width*ratio;canvas.height=rect.height*ratio;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.strokeStyle='#20231f';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round'}
+function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+canvas.addEventListener('pointerdown',e=>{drawing=true;hasInk=true;canvas.setPointerCapture(e.pointerId);const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke()});
+['pointerup','pointercancel'].forEach(ev=>canvas.addEventListener(ev,()=>drawing=false));
+function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height);hasInk=false}
+document.getElementById('clear-sign').addEventListener('click',clearSignature);
+document.getElementById('complete').addEventListener('click',()=>{const signer=document.getElementById('signer').value.trim();if(!signer){showToast('Enter the name of the person receiving.');return}if(!hasInk){showToast('A customer signature is required.');return}selected.status='done';selected.signedBy=signer;selected.note=document.getElementById('driver-note').value;selected.signedAt=new Date().toISOString();selected.signature=canvas.toDataURL('image/png');render();showToast('Demo record saved in this session. Backend persistence is not connected.');showView('dashboard')});
+document.getElementById('today').textContent=new Intl.DateTimeFormat('en-KE',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(new Date());
+sizeCanvas();window.addEventListener('resize',()=>{if(!hasInk)sizeCanvas()});render();
 
-    let currentLang = 'en';
 
-    // DOM Elements
-    const pageDashboard = document.getElementById('pageDashboard');
-    const pageDetails = document.getElementById('pageDetails');
-    const tabItems = document.querySelectorAll('.nav-item');
-    const verifyBtn = document.getElementById('verifyBtn');
-    const checkboxes = document.querySelectorAll('.item-check');
+// Compact the glass header and section tabs after the user starts scrolling.
+const topbarEl=document.querySelector('.topbar');
+const catalogNavEl=document.querySelector('.catalog-nav');
+let compactFrame=false;
+function updateCompactHeader(){
+  const compact=window.scrollY>32;
+  topbarEl.classList.toggle('compact',compact);
+  catalogNavEl.classList.toggle('compact',compact);
+  compactFrame=false;
+}
+window.addEventListener('scroll',()=>{if(!compactFrame){window.requestAnimationFrame(updateCompactHeader);compactFrame=true;}},{passive:true});
+updateCompactHeader();
 
-    // Apply Translations
-    function applyLanguage(lang) {
-      currentLang = lang;
-      
-      // Update text content based on data attributes
-      document.querySelectorAll('[data-lang-key]').forEach(el => {
-        const key = el.getAttribute('data-lang-key');
-        if (translations[lang][key]) {
-          el.textContent = translations[lang][key];
-        }
-      });
-      
-      // Update Language Toggle active states
-      document.getElementById('langEn').classList.toggle('active', lang === 'en');
-      document.getElementById('langSw').classList.toggle('active', lang === 'sw');
-    }
+// Profile menu: lightweight front-end interaction, ready to connect to authentication later.
+const profileTrigger=document.getElementById('profileTrigger');
+const profileMenu=document.getElementById('profileMenu');
+function closeProfileMenu(){profileMenu.hidden=true;profileTrigger.setAttribute('aria-expanded','false');}
+profileTrigger.addEventListener('click',e=>{
+  e.stopPropagation();
+  const willOpen=profileMenu.hidden;
+  profileMenu.hidden=!willOpen;
+  profileTrigger.setAttribute('aria-expanded',String(willOpen));
+});
+profileMenu.addEventListener('click',e=>{
+  const action=e.target.closest('[data-profile-action]')?.dataset.profileAction;
+  if(!action)return;
+  closeProfileMenu();
+  if(action==='profile')showToast('Profile details will be connected to your user account.');
+  if(action==='settings')showToast('Account settings will be available when sign-in is connected.');
+  if(action==='signout')showToast('Sign-out will be enabled when authentication is connected.');
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.profile-wrap'))closeProfileMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProfileMenu();});
 
-    // Language Toggle Listeners
-    document.getElementById('langEn').addEventListener('click', () => applyLanguage('en'));
-    document.getElementById('langSw').addEventListener('click', () => applyLanguage('sw'));
-
-    // Navigation / Tab Switching
-    function switchTab(pageId) {
-      // Hide all pages
-      pageDashboard.classList.remove('active');
-      pageDetails.classList.remove('active');
-      
-      // Show target page
-      document.getElementById(pageId).classList.add('active');
-
-      // Update Bottom Nav active states
-      tabItems.forEach(tab => {
-        if (tab.getAttribute('data-target') === pageId) {
-          tab.classList.add('active');
-        } else {
-          tab.classList.remove('active');
-        }
-      });
-
-      // If navigating to details page, refresh button state
-      if (pageId === 'pageDetails') {
-        updateVerifyButton();
-      }
-    }
-
-    // Navigate to details from dashboard card click
-    function goToDetails(id) {
-      // In a real app, you would fetch and display data for the specific ID here.
-      // For this demo, we're just switching tabs.
-      switchTab('pageDetails');
-    }
-
-    // Checkbox Logic
-    function updateVerifyButton() {
-      const total = checkboxes.length;
-      const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
-      
-      // Update visual style of list items
-      checkboxes.forEach(cb => {
-        const parent = cb.closest('.check-item');
-        if (cb.checked) {
-          parent.classList.add('checked');
-        } else {
-          parent.classList.remove('checked');
-        }
-      });
-
-      // Enable button only if ALL checkboxes are ticked
-      if (checked === total && total > 0) {
-        verifyBtn.disabled = false;
-      } else {
-        verifyBtn.disabled = true;
-      }
-    }
-
-    // Attach change listeners to checkboxes
-    checkboxes.forEach(cb => {
-      cb.addEventListener('change', updateVerifyButton);
-    });
-
-    // Verify Button Action
-    verifyBtn.addEventListener('click', () => {
-      if (!verifyBtn.disabled) {
-        // Show "Done" state briefly
-        const originalText = verifyBtn.innerHTML;
-        verifyBtn.innerHTML = `<span class="material-symbols-outlined filled" style="font-size: 20px;">check_circle</span> <span data-lang-key="done">${translations[currentLang].done}</span>`;
-        verifyBtn.style.backgroundColor = 'var(--md-sys-color-success)';
-        
-        // Reset after 1.5 seconds (Demo Behavior)
-        setTimeout(() => {
-          verifyBtn.innerHTML = originalText;
-          verifyBtn.style.backgroundColor = '';
-          verifyBtn.disabled = true;
-          
-          // Reset checkboxes
-          checkboxes.forEach(cb => cb.checked = false);
-          updateVerifyButton();
-          
-          // Go back to dashboard
-          switchTab('pageDashboard');
-        }, 1500);
-      }
-    });
-
-    // Initial Setup
-    applyLanguage('en');
-    updateVerifyButton();
-
-  </script>
+setupSupportLinks();
+const globalSearch=document.getElementById('globalSearch');
+if(globalSearch){globalSearch.addEventListener('input',()=>{const local=document.getElementById('search');if(local){local.value=globalSearch.value;local.dispatchEvent(new Event('input'));showView('dashboard');}});}
+</script>
 </body>
 </html>
